@@ -1,0 +1,49 @@
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+    async up(queryInterface, Sequelize) {
+        await queryInterface.createTable('purchase_itens', {
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: Sequelize.INTEGER
+            },
+            purchaseId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'purchases',
+                    key: 'id'
+                },
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE'
+            },
+            productId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'products',
+                    key: 'id'
+                },
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE'
+            },
+            quantity: {
+                type: Sequelize.INTEGER
+            },
+            price: {
+                type: Sequelize.DECIMAL
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE
+            }
+        });
+    },
+    async down(queryInterface, Sequelize) {
+        await queryInterface.dropTable('purchase_itens');
+    }
+};
