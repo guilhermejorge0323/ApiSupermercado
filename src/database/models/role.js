@@ -7,13 +7,13 @@ module.exports = (sequelize, DataTypes) => {
 
         static associate(models) {
             Role.belongsToMany(models.User,{
-                through: 'user_roles',
-                as: 'role_user',
+                through: models.User_role,
+                as: 'user_role',
                 foreignKey: 'role_id'
             });
 
             Role.belongsToMany(models.Permission, {
-                through: 'role_permissions',
+                through: models.Role_permission,
                 as: 'role_permission',
                 foreignKey: 'role_id'
             });
@@ -26,8 +26,34 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
-        name: DataTypes.STRING,
-        desc: DataTypes.STRING
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    args: true,
+                    msg: 'Nome da role e requerido'
+                },
+                len: {
+                    args: [2,100],
+                    msg: 'O nome da role deve ter entre 2 e 100 caracteres'
+                }
+            }
+        },
+        desc: {
+            type:DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    args: true,
+                    msg: 'A Desc da role e requerido'
+                },
+                len: {
+                    args: [2,100],
+                    msg: 'A Desc da role deve ter entre 2 e 100 caracteres'
+                }
+            }
+        }
     }, {
         sequelize,
         modelName: 'Role',

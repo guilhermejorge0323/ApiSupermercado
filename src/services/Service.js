@@ -1,4 +1,5 @@
 const db = require('../database/models');
+const { Op } = require('sequelize');
 
 class Service {
     constructor(model) {
@@ -14,6 +15,15 @@ class Service {
     }
 
     async create(data) {
+        const existig = await db[this.model].findOne({
+            where: {
+                name: data.name,
+            }
+        });
+
+        if(existig) {
+            throw new Error(`Ja existe um ${this.model} com o nome ${data.name}`);
+        }
         return db[this.model].create(data);
     }
 
@@ -21,6 +31,19 @@ class Service {
         const instance = await db[this.model].findOne(obj);
         if (!instance) {
             throw new Error(`${this.model} não encontrado`);
+        }
+
+        if(data.name) {
+            const existing = await db[this.model].findOne({
+                where: {
+                    name: data.name,
+                    id: { [Op.ne]: instance.id }
+                }
+            });
+
+            if (existing) {
+                throw new Error(`Ja existe um ${this.model} com esse nome`);
+            }
         }
 
         instance.set(data);

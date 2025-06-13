@@ -5,6 +5,7 @@ const { sign } = require('jsonwebtoken');
 const jsonSecret = require('../database/config/jsonSecret');
 const cpfValidator = require('../utils/cpfValidator');
 const validator = require('validator');
+const { verify,decode } = require('jsonwebtoken');
 
 class LoginService extends Service {
     constructor(){
@@ -37,11 +38,13 @@ class LoginService extends Service {
         }
 
         const user = await super.getOne({
-            attributes: ['id','email','cpf','password'],
+            attributes: ['id','email','password'],
             where: {
                 [Op.or]: conditions
             }
         });
+
+        
 
 
         if(!user) {
@@ -56,15 +59,14 @@ class LoginService extends Service {
 
         const acessToken = sign(
             {
+                id: user.id,
                 email: user.email,
-                password: user.password,
             },
             jsonSecret.secret,
             {
                 expiresIn: '30d',
             }
         );
-
         return acessToken;
     }
 }

@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
     class User extends Model {
         static associate(models) {
             User.belongsToMany(models.Role,{
-                through: 'user_roles',
+                through: models.User_role,
                 as: 'user_role',
                 foreignKey: 'user_id'
             });
 
             User.belongsToMany(models.Permission,{
-                through: 'user_permissions',
+                through: models.User_permission,
                 as: 'user_permission',
                 foreignKey: 'user_id'
             });
@@ -101,15 +101,18 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         hooks: {
-            beforeCreate: (user) => {
+            beforeCreate: async (user) => {
                 user.cpf = cpfValidator(user.cpf);
             },
 
-            beforeUpdate: (user) => {
+            beforeUpdate: async (user) => {
                 const formattedCpf = cpfValidator(user.cpf);
+
                 if (user._previousDataValues.cpf !== formattedCpf) {
                     throw new Error('Não é permitido alterar o CPF');
                 }
+
+                user.cpf = formattedCpf;
             }
         }
     });

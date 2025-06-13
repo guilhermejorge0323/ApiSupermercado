@@ -1,0 +1,14 @@
+- fazer autenticacao de permissoes para todas as rotas
+
+- verificar caso de criar usuarios, gerente pode criar funcionarios, funcionarios pode criar produto , ao se cadastrar o usuario recebe role de cliente
+
+- atualizar produto :
+                        -nome
+                        -setor
+                        -marca
+                        -classificacao
+                        -preco
+
+        Nao pode ter um produto no mesmo setor com mesmo nome marca e classificacao
+
+- criar rotas genericas dependendo da permissao

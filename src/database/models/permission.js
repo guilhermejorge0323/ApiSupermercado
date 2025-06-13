@@ -6,13 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     class Permission extends Model {
         static associate(models) {
             Permission.belongsToMany(models.User,{
-                through: 'user_permissions',
-                as: 'permission_user',
+                through: models.User_permission,
+                as: 'user_permission',
                 foreignKey: 'permission_id'
             });
 
             Permission.belongsToMany(models.Role,{
-                through: 'role_permission',
+                through: models.Role_permission,
                 as: 'permission_role',
                 foreignKey: 'permission_id'
             });
@@ -25,8 +25,34 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
-        name: DataTypes.STRING,
-        desc: DataTypes.STRING
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    args: true,
+                    msg: 'Nome da permissao e requerido'
+                },
+                len: {
+                    args: [2,100],
+                    msg: 'O nome da parmissao deve ter entre 2 e 100 caracteres'
+                }
+            }
+        },
+        desc: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    args: true,
+                    msg: 'A desc da permissao e requerido'
+                },
+                len: {
+                    args: [2,100],
+                    msg: 'A desc da permissao deve ter entre 2 e 100 caracteres'
+                }
+            }
+        }
     }, {
         sequelize,
         modelName: 'Permission',
